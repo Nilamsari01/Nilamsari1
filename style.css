@@ -302,8 +302,9 @@ li.done .text {
 .item-info {
   display: flex;
   flex: 1;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
   min-width: 0;
 }
 
@@ -331,9 +332,8 @@ li.done .text {
   font-weight: 600;
   color: var(--text);
   font-size: 1.05rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .done .text {
