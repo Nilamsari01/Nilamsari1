@@ -30,7 +30,7 @@ body {
 }
 
 .container {
-  width: min(460px, 100%);
+  width: min(500px, 100%);
   background: var(--card);
   padding: 22px 20px 18px;
   border-radius: 22px;
