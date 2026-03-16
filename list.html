@@ -10,15 +10,15 @@
 <body>
   <div class="container">
     <header class="header">
-      <div class="header-row">
-        <h1>Daftar Jadwal Olahraga</h1>
-        <button class="secondary-btn" id="sortBtn" type="button">Urutkan Hari</button>
-      </div>
+      <h1>Daftar Jadwal Olahraga</h1>
       <p class="subtitle">Lihat jadwal yang sudah kamu simpan. Tandai selesai atau hapus jika sudah selesai.</p>
     </header>
 
 
     <div class="list-panel">
+      <div class="list-panel-header">
+        <button class="secondary-btn" id="sortBtn" type="button">Urutkan Hari</button>
+      </div>
       <div class="empty-state" id="emptyState">
         <span class="empty-icon">🗓️</span>
         <p>Belum ada jadwal olahraga. Tambahkan di halaman input.</p>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="footer-actions">
-      <a class="secondary-btn" href="index.html">Kembali ke input</a>
+      <button class="primary" id="backBtn" type="button">Kembali ke input</button>
     </div>
 
     <footer class="footer">

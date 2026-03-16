@@ -356,11 +356,12 @@ li.done .text {
   transform: translateY(-1px);
 }
 
-.header-row {
+.list-panel-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 12px;
 }
 
 .secondary-btn {
