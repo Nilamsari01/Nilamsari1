@@ -259,13 +259,13 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 16px;
+  padding: 18px 20px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
-  margin-top: 12px;
+  margin-top: 14px;
   transition: transform 140ms ease, box-shadow 140ms ease;
 }
 
@@ -316,11 +316,11 @@ li.done .text {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 0.85rem;
-  min-width: 78px;
+  font-size: 0.95rem;
+  min-width: 90px;
   text-align: center;
   background: rgba(217, 70, 239, 0.18);
   color: #7c2d91;
@@ -330,6 +330,7 @@ li.done .text {
 .text {
   font-weight: 600;
   color: var(--text);
+  font-size: 1.05rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
