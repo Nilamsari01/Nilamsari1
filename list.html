@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Jadwal Olahraga</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-row">
+        <h1>Daftar Jadwal Olahraga</h1>
+        <button class="secondary-btn" id="sortBtn" type="button">Urutkan Hari</button>
+      </div>
+      <p class="subtitle">Lihat jadwal yang sudah kamu simpan. Tandai selesai atau hapus jika sudah selesai.</p>
+    </header>
+
+
+    <div class="list-panel">
+      <div class="empty-state" id="emptyState">
+        <span class="empty-icon">🗓️</span>
+        <p>Belum ada jadwal olahraga. Tambahkan di halaman input.</p>
+      </div>
+      <ul id="list" class="list"></ul>
+    </div>
+
+    <div class="footer-actions">
+      <a class="secondary-btn" href="index.html">Kembali ke input</a>
+    </div>
+
+    <footer class="footer">
+      <small>Tekan item untuk menandai selesai. Klik "Hapus" untuk menghapus.</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

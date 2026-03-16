@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Olahraga</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+  <header class="header">
+    <h1>Jadwal Olahraga 💜</h1>
+    <p class="subtitle">Biar makin semangat, catat olahragamu tiap hari~</p>
+  </header>
+
+  <div class="add-panel">
+    <div class="input-group">
+      <label for="hariSelect">Pilih hari</label>
+      <select id="hariSelect" class="select-day" aria-label="Pilih hari">
+        <option value="">Pilih hari</option>
+        <option>Senin</option>
+        <option>Selasa</option>
+        <option>Rabu</option>
+        <option>Kamis</option>
+        <option>Jumat</option>
+        <option>Sabtu</option>
+        <option>Minggu</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="taskInput">Jenis olahraga</label>
+      <div class="input-wrapper">
+        <input type="text" id="taskInput" placeholder="Misalnya: Jogging 30 menit" autocomplete="off" />
+        <button class="add-btn" id="addBtn" type="button">+</button>
+      </div>
+    </div>
+
+    <p class="hint">Pilih hari lalu ketik olahraga yang ingin dijadwalkan.</p>
+
+    <div class="footer-actions">
+      <a class="secondary-btn" href="list.html">Lihat daftar jadwal</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <small>Jadwal tersimpan secara otomatis (LocalStorage).</small>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
