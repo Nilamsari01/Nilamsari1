@@ -14,10 +14,10 @@ function saveSchedules(schedules) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
 }
 
-function createSchedule(day, text) {
+function createSchedule(date, text) {
   return {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    day,
+    date,
     text,
     done: false,
     createdAt: Date.now(),
@@ -25,7 +25,7 @@ function createSchedule(day, text) {
 }
 
 function isInputPage() {
-  return !!document.getElementById("hariSelect");
+  return !!document.getElementById("dateInput");
 }
 
 function isListPage() {
@@ -34,25 +34,29 @@ function isListPage() {
 
 /* --- Input Page Logic --- */
 function initInputPage() {
-  const hariSelect = document.getElementById("hariSelect");
+  const dateInput = document.getElementById("dateInput");
   const taskInput = document.getElementById("taskInput");
   const addBtn = document.getElementById("addBtn");
 
+  // Set default tanggal ke hari ini untuk kenyamanan
+  const today = new Date().toISOString().slice(0, 10);
+  dateInput.value = dateInput.value || today;
+
   function addSchedule() {
-    const day = hariSelect.value.trim();
+    const date = dateInput.value.trim();
     const text = taskInput.value.trim();
 
-    if (!day || !text) {
-      alert("Pilih hari dan isi olahraga dulu ya!");
+    if (!date || !text) {
+      alert("Pilih tanggal dan isi olahraga dulu ya!");
       return;
     }
 
     const schedules = loadSchedules();
-    schedules.unshift(createSchedule(day, text));
+    schedules.unshift(createSchedule(date, text));
     saveSchedules(schedules);
 
     taskInput.value = "";
-    hariSelect.value = "";
+    dateInput.value = today;
     taskInput.focus();
 
     window.location.href = "list.html";
@@ -84,12 +88,41 @@ function initListPage() {
     "Minggu",
   ];
 
-  function sortByDay(a, b) {
+  function parseDate(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function formatDate(value) {
+    const date = parseDate(value);
+    if (!date) return value || "";
+
+    const weekday = date.toLocaleDateString("id-ID", { weekday: "long" });
+    const day = date.toLocaleDateString("id-ID", { day: "2-digit" });
+    const month = date.toLocaleDateString("id-ID", { month: "long" });
+    const year = date.toLocaleDateString("id-ID", { year: "numeric" });
+
+    return `${weekday}, ${day} ${month} ${year}`;
+  }
+
+  function sortByDate(a, b) {
+    const aDate = parseDate(a.date ?? a.day);
+    const bDate = parseDate(b.date ?? b.day);
+
+    if (aDate && bDate) return aDate - bDate;
+    if (aDate) return -1;
+    if (bDate) return 1;
+
     return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
   }
 
+  let sortAsc = true;
+
   function renderList() {
-    const visible = [...schedules].sort(sortByDay);
+    const visible = [...schedules].sort((a, b) =>
+      sortByDate(a, b) * (sortAsc ? 1 : -1)
+    );
 
     refs.list.innerHTML = "";
     if (visible.length === 0) {
@@ -111,7 +144,7 @@ function initListPage() {
 
       const badge = document.createElement("span");
       badge.className = "badge";
-      badge.textContent = task.day;
+      badge.textContent = formatDate(task.date ?? task.day);
 
       const text = document.createElement("span");
       text.className = "text";
@@ -165,7 +198,10 @@ function initListPage() {
   }
 
   refs.sortBtn.addEventListener("click", () => {
-    schedules.sort(sortByDay);
+    sortAsc = !sortAsc;
+    refs.sortBtn.textContent = sortAsc
+      ? "Urutkan Tanggal"
+      : "Urutkan Tanggal (Terbalik)";
     renderList();
   });
 
