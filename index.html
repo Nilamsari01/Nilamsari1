@@ -5,100 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jadwal Olahraga</title>
     <!-- Cache-busting query untuk menghindari CSS lama tersimpan di browser -->
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
 
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">
-      <span class="brand-icon">📋</span>
-      <h2>Menu</h2>
+<div class="container">
+  <header class="header">
+    <h1>Jadwal Olahraga</h1>
+    <p class="subtitle">Biar makin semangat, catat olahragamu tiap hari~</p>
+  </header>
+
+  <div class="add-panel">
+    <div class="input-group">
+      <label for="dateInput">Tanggal</label>
+      <input type="date" id="dateInput" class="date-input" aria-label="Pilih tanggal" />
     </div>
 
-    <nav class="nav">
-      <button class="nav-item active" data-section="home">
-        <span class="nav-icon">🏠</span>
-        Beranda
-      </button>
-
-      <button class="nav-item" data-section="add">
-        <span class="nav-icon">➕</span>
-        Tambah Jadwal
-      </button>
-
-      <button class="nav-item" data-section="list">
-        <span class="nav-icon">🗒️</span>
-        Daftar Jadwal
-      </button>
-    </nav>
-  </aside>
-
-  <main class="main">
-    <section id="homeSection" class="section active">
-      <div class="hero-card">
-        <div class="hero-header">
-          <h1>List & Ayo Kelola Jadwal</h1>
-          <p>Mengelola jadwal olahraga dengan baik membantu kamu tetap konsisten dan lebih sehat.</p>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-value" id="totalCount">0</div>
-            <div class="stat-label">Total Jadwal</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-value" id="soonCount">0</div>
-            <div class="stat-label">Jadwal Dekat</div>
-          </div>
-        </div>
+    <div class="input-group">
+      <label for="taskInput">Jenis olahraga</label>
+      <div class="input-wrapper">
+        <input type="text" id="taskInput" placeholder="Misalnya: Jogging 30 menit" autocomplete="off" />
+        <button class="add-btn" id="addBtn" type="button">+</button>
       </div>
-    </section>
+    </div>
 
-    <section id="addSection" class="section">
-      <header class="header">
-        <h1>Tambah Jadwal Olahraga</h1>
-        <p class="subtitle">Tambah jadwal baru untuk menjadwalkan aktivitas olahragamu.</p>
-      </header>
+    <p class="hint">Pilih tanggal lalu ketik olahraga yang ingin dijadwalkan.</p>
 
-      <div class="add-panel">
-        <div class="input-group">
-          <label for="dateInput">Tanggal</label>
-          <input type="date" id="dateInput" class="date-input" aria-label="Pilih tanggal" />
-        </div>
+    <div class="footer-actions">
+      <a class="secondary-btn" href="list.html">
+        <span class="btn-icon" aria-hidden="true">📋</span>
+        <span>Lihat daftar jadwal</span>
+      </a>
+    </div>
+  </div>
 
-        <div class="input-group">
-          <label for="taskInput">Jenis olahraga</label>
-          <div class="input-wrapper">
-            <input type="text" id="taskInput" placeholder="Misalnya: Jogging 30 menit" autocomplete="off" />
-            <button class="add-btn" id="addBtn" type="button">+</button>
-          </div>
-        </div>
-
-        <p class="hint">Pilih tanggal lalu ketik olahraga yang ingin dijadwalkan.</p>
-      </div>
-    </section>
-
-    <section id="listSection" class="section">
-      <header class="header">
-        <h1>Daftar Jadwal Olahraga</h1>
-        <p class="subtitle">Lihat jadwal yang sudah kamu simpan. Tandai selesai atau hapus jika sudah selesai.</p>
-      </header>
-
-      <div class="list-panel">
-        <div class="list-panel-header">
-          <button class="secondary-btn" id="sortBtn" type="button">Urutkan Tanggal</button>
-        </div>
-        <div class="empty-state" id="emptyState">
-          <span class="empty-icon">🗓️</span>
-          <p>Belum ada jadwal olahraga. Tambahkan di halaman Tambah Jadwal.</p>
-        </div>
-        <ul id="list" class="list"></ul>
-      </div>
-    </section>
-  </main>
+  <footer class="footer">
+    <small>Jadwal tersimpan secara otomatis (LocalStorage).</small>
+  </footer>
 </div>
 
 <script src="script.js"></script>

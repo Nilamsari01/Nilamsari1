@@ -24,12 +24,13 @@ function createSchedule(date, text) {
   };
 }
 
-const state = {
-  schedules: [],
-  sortAsc: true,
-};
+function isInputPage() {
+  return !!document.getElementById("dateInput");
+}
 
-const dayOrder = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+function isListPage() {
+  return !!document.getElementById("list");
+}
 
 function parseDate(value) {
   if (!value) return null;
@@ -49,74 +50,15 @@ function formatDate(value) {
   return `${weekday}, ${day} ${month} ${year}`;
 }
 
-function getUpcomingCount() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const inSevenDays = new Date(today);
-  inSevenDays.setDate(inSevenDays.getDate() + 7);
-
-  return state.schedules.filter((task) => {
-    const date = parseDate(task.date ?? task.day);
-    if (!date) return false;
-    date.setHours(0, 0, 0, 0);
-    return date >= today && date <= inSevenDays;
-  }).length;
-}
-
-function updateStats() {
-  const totalCount = document.getElementById("totalCount");
-  const soonCount = document.getElementById("soonCount");
-
-  if (!totalCount || !soonCount) return;
-
-  totalCount.textContent = state.schedules.length;
-  soonCount.textContent = getUpcomingCount();
-}
-
-function navigateTo(section) {
-  document.querySelectorAll(".section").forEach((el) => {
-    el.classList.toggle("active", el.id === `${section}Section`);
-  });
-
-  document.querySelectorAll(".nav-item").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.section === section);
-  });
-
-  window.location.hash = section;
-
-  if (section === "list") {
-    renderList();
-  }
-}
-
-function initNavigation() {
-  document.querySelectorAll(".nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      navigateTo(btn.dataset.section);
-    });
-  });
-
-  const hash = window.location.hash.replace("#", "") || "home";
-  navigateTo(hash);
-
-  window.addEventListener("hashchange", () => {
-    const next = window.location.hash.replace("#", "") || "home";
-    navigateTo(next);
-  });
-}
-
-function initAddForm() {
+function initInputPage() {
   const dateInput = document.getElementById("dateInput");
   const taskInput = document.getElementById("taskInput");
   const addBtn = document.getElementById("addBtn");
 
   const today = new Date().toISOString().slice(0, 10);
-  if (dateInput) dateInput.value = dateInput.value || today;
+  dateInput.value = dateInput.value || today;
 
   function addSchedule() {
-    if (!dateInput || !taskInput) return;
-
     const date = dateInput.value.trim();
     const text = taskInput.value.trim();
 
@@ -125,139 +67,151 @@ function initAddForm() {
       return;
     }
 
-    state.schedules.unshift(createSchedule(date, text));
-    saveSchedules(state.schedules);
-    updateStats();
+    const schedules = loadSchedules();
+    schedules.unshift(createSchedule(date, text));
+    saveSchedules(schedules);
 
     taskInput.value = "";
     dateInput.value = today;
     taskInput.focus();
 
-    navigateTo("list");
+    window.location.href = "list.html";
   }
 
-  if (addBtn) {
-    addBtn.addEventListener("click", addSchedule);
-  }
-
-  if (taskInput) {
-    taskInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") addSchedule();
-    });
-  }
+  addBtn.addEventListener("click", addSchedule);
+  taskInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") addSchedule();
+  });
 }
 
-function sortByDate(a, b) {
-  const aDate = parseDate(a.date ?? a.day);
-  const bDate = parseDate(b.date ?? b.day);
+function initListPage() {
+  let schedules = loadSchedules();
 
-  if (aDate && bDate) return aDate - bDate;
-  if (aDate) return -1;
-  if (bDate) return 1;
+  const refs = {
+    list: document.getElementById("list"),
+    emptyState: document.getElementById("emptyState"),
+    sortBtn: document.getElementById("sortBtn"),
+  };
 
-  return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
-}
+  const dayOrder = [
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+    "Minggu",
+  ];
 
-function renderList() {
-  const listEl = document.getElementById("list");
-  const emptyState = document.getElementById("emptyState");
-  const sortBtn = document.getElementById("sortBtn");
+  function sortByDate(a, b) {
+    const aDate = parseDate(a.date ?? a.day);
+    const bDate = parseDate(b.date ?? b.day);
 
-  if (!listEl || !emptyState || !sortBtn) return;
+    if (aDate && bDate) return aDate - bDate;
+    if (aDate) return -1;
+    if (bDate) return 1;
 
-  const visible = [...state.schedules].sort((a, b) =>
-    sortByDate(a, b) * (state.sortAsc ? 1 : -1)
-  );
-
-  listEl.innerHTML = "";
-  if (visible.length === 0) {
-    emptyState.style.display = "flex";
-    return;
+    return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
   }
 
-  emptyState.style.display = "none";
+  let sortAsc = true;
 
-  visible.forEach((task) => {
-    const li = document.createElement("li");
-    li.className = task.done ? "done" : "";
+  function renderList() {
+    const visible = [...schedules].sort((a, b) =>
+      sortByDate(a, b) * (sortAsc ? 1 : -1)
+    );
 
-    const item = document.createElement("div");
-    item.className = "item";
+    refs.list.innerHTML = "";
+    if (visible.length === 0) {
+      refs.emptyState.style.display = "flex";
+      return;
+    }
 
-    const info = document.createElement("div");
-    info.className = "item-info";
+    refs.emptyState.style.display = "none";
 
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = formatDate(task.date ?? task.day);
+    visible.forEach((task) => {
+      const li = document.createElement("li");
+      li.className = task.done ? "done" : "";
 
-    const text = document.createElement("span");
-    text.className = "text";
-    text.textContent = task.text;
+      const item = document.createElement("div");
+      item.className = "item";
 
-    info.appendChild(badge);
-    info.appendChild(text);
+      const info = document.createElement("div");
+      info.className = "item-info";
 
-    const controls = document.createElement("div");
-    controls.className = "item-actions";
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = formatDate(task.date ?? task.day);
 
-    const doneBtn = document.createElement("button");
-    doneBtn.className = "done-btn";
-    doneBtn.textContent = task.done ? "Batal" : "Selesai";
-    doneBtn.addEventListener("click", (event) => {
-      event.stopPropagation();
-      toggleDone(task.id);
+      const text = document.createElement("span");
+      text.className = "text";
+      text.textContent = task.text;
+
+      info.appendChild(badge);
+      info.appendChild(text);
+
+      const controls = document.createElement("div");
+      controls.className = "item-actions";
+
+      const doneBtn = document.createElement("button");
+      doneBtn.className = "done-btn";
+      doneBtn.textContent = task.done ? "Batal" : "Selesai";
+      doneBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleDone(task.id);
+      });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "delete";
+      deleteBtn.textContent = "Hapus";
+      deleteBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        removeTask(task.id);
+      });
+
+      controls.appendChild(doneBtn);
+      controls.appendChild(deleteBtn);
+
+      item.appendChild(info);
+      item.appendChild(controls);
+
+      li.appendChild(item);
+      refs.list.appendChild(li);
     });
+  }
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "delete";
-    deleteBtn.textContent = "Hapus";
-    deleteBtn.addEventListener("click", (event) => {
-      event.stopPropagation();
-      removeTask(task.id);
-    });
+  function toggleDone(id) {
+    const task = schedules.find((t) => t.id === id);
+    if (!task) return;
+    task.done = !task.done;
+    saveSchedules(schedules);
+    renderList();
+  }
 
-    controls.appendChild(doneBtn);
-    controls.appendChild(deleteBtn);
+  function removeTask(id) {
+    schedules = schedules.filter((t) => t.id !== id);
+    saveSchedules(schedules);
+    renderList();
+  }
 
-    item.appendChild(info);
-    item.appendChild(controls);
-
-    li.appendChild(item);
-    listEl.appendChild(li);
+  refs.sortBtn.addEventListener("click", () => {
+    sortAsc = !sortAsc;
+    refs.sortBtn.textContent = sortAsc
+      ? "Urutkan Tanggal"
+      : "Urutkan Tanggal (Terbalik)";
+    renderList();
   });
 
-  sortBtn.textContent = state.sortAsc
-    ? "Urutkan Tanggal"
-    : "Urutkan Tanggal (Terbalik)";
+  const backBtn = document.getElementById("backBtn");
+  backBtn.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
 
-  sortBtn.onclick = () => {
-    state.sortAsc = !state.sortAsc;
-    renderList();
-  };
-}
-
-function toggleDone(id) {
-  const task = state.schedules.find((t) => t.id === id);
-  if (!task) return;
-  task.done = !task.done;
-  saveSchedules(state.schedules);
   renderList();
-  updateStats();
 }
 
-function removeTask(id) {
-  state.schedules = state.schedules.filter((t) => t.id !== id);
-  saveSchedules(state.schedules);
-  renderList();
-  updateStats();
+if (isInputPage()) {
+  initInputPage();
+} else if (isListPage()) {
+  initListPage();
 }
-
-function initApp() {
-  state.schedules = loadSchedules();
-  initNavigation();
-  initAddForm();
-  updateStats();
-}
-
-initApp();
